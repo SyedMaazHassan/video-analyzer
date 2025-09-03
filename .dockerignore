@@ -1,0 +1,14 @@
+videos/
+analysis_results/
+results/
+trained_models/
+*.mp4
+*.avi
+*.mov
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.git/
+.gitignore
+README.md

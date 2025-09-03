@@ -1,0 +1,309 @@
+[
+  {
+    "name": "Portal Placement",
+    "attributes": []
+  },
+  {
+    "name": "Diagnostic Arthroscopy",
+    "attributes": []
+  },
+  {
+    "name": "Glenoid Preparation",
+    "attributes": []
+  },
+  {
+    "name": "Anchor Placement",
+    "attributes": [
+      {
+        "name": "Anchor Number",
+        "input_type": "text",
+        "default_value": "1",
+        "values": [
+          "1"
+        ],
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "Suture Passage",
+    "attributes": [
+      {
+        "name": "Anchor Number",
+        "input_type": "text",
+        "default_value": "1",
+        "values": [
+          "1"
+        ],
+        "mutable": true
+      },
+      {
+        "name": "Cartilage Damage",
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": [
+          "false",
+          "true"
+        ],
+        "mutable": true
+      },
+      {
+        "name": "Pass Time > 5 min",
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": [
+          "false",
+          "true"
+        ],
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "Suture Fixation",
+    "attributes": [
+      {
+        "name": "Anchor Number",
+        "input_type": "text",
+        "default_value": "1",
+        "values": [
+          "1"
+        ],
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "Final Inspection",
+    "attributes": []
+  },
+  {
+    "name": "Suture Attempt",
+    "attributes": [
+      {
+        "name": "Attempt Number",
+        "input_type": "text",
+        "default_value": "1",
+        "values": [
+          "1"
+        ],
+        "mutable": true
+      },
+      {
+        "name": "Outcome",
+        "input_type": "select",
+        "default_value": "Success",
+        "values": [
+          "Success",
+          "Fail"
+        ],
+        "mutable": true
+      },
+      {
+        "name": "Reason",
+        "input_type": "select",
+        "default_value": "None",
+        "values": [
+          "Loop Missed",
+          "Torn Suture",
+          "Device Misfire",
+          "Other",
+          "None"
+        ],
+        "mutable": true
+      },
+      {
+        "name": "Anchor Number",
+        "input_type": "text",
+        "default_value": "1",
+        "values": [
+          "1"
+        ],
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "Anchor Reposition",
+    "attributes": [
+      {
+        "name": "Reason",
+        "input_type": "select",
+        "default_value": "Unknown",
+        "values": [
+          "Angle",
+          "Depth",
+          "Position",
+          "Unknown"
+        ],
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "Anchor Pullout",
+    "attributes": []
+  },
+  {
+    "name": "Bleeding",
+    "attributes": [
+      {
+        "name": "Severity",
+        "input_type": "select",
+        "default_value": "Mild",
+        "values": [
+          "Mild",
+          "Moderate",
+          "Severe"
+        ],
+        "mutable": true
+      },
+      {
+        "name": "Controlled",
+        "input_type": "checkbox",
+        "default_value": "false",
+        "values": [
+          "false",
+          "true"
+        ],
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "Custom Event",
+    "attributes": [
+      {
+        "name": "Category",
+        "input_type": "select",
+        "default_value": "Device Failure",
+        "values": [
+          "Device Failure",
+          "Anchor Pullout",
+          "Anchor Reposition (Multiple)",
+          "Bailout Strategy",
+          "Custom Instrument Used",
+          "Off-Axis Anchor",
+          "Prolonged Suture Passage",
+          "Retrieval Attempt",
+          "Workflow Deviation",
+          "Unexpected Bleeding",
+          "Other"
+        ],
+        "mutable": true
+      },
+      {
+        "name": "Description",
+        "input_type": "text",
+        "default_value": "Describe event",
+        "values": [
+          "Describe event"
+        ],
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "Anatomy",
+    "attributes": [
+      {
+        "name": "Structure",
+        "input_type": "select",
+        "default_value": "Labrum",
+        "values": [
+          "Labrum",
+          "Glenoid",
+          "Humeral Head",
+          "Biceps Tendon",
+          "Capsule",
+          "Rotator Cuff",
+          "Cartilage",
+          "Subscapularis",
+          "Other"
+        ],
+        "mutable": true
+      },
+      {
+        "name": "Abnormality",
+        "input_type": "select",
+        "default_value": "None",
+        "values": [
+          "None",
+          "Tear",
+          "Degeneration",
+          "Fraying",
+          "Calcification",
+          "Other"
+        ],
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "Instrument",
+    "attributes": [
+      {
+        "name": "Type",
+        "input_type": "select",
+        "default_value": "Suture Passer",
+        "values": [
+          "Suture Passer",
+          "Shaver",
+          "Cannula",
+          "Anchor Driver",
+          "Probe",
+          "Punch",
+          "Grasper",
+          "Scissors",
+          "Arthroscope",
+          "Other"
+        ],
+        "mutable": true
+      }
+    ]
+  },
+  {
+    "name": "Implant",
+    "attributes": [
+      {
+        "name": "Material",
+        "input_type": "select",
+        "default_value": "PEEK",
+        "values": [
+          "PEEK",
+          "Biocomposite",
+          "Metal",
+          "All-Suture",
+          "Other"
+        ],
+        "mutable": true
+      },
+      {
+        "name": "Implant Type",
+        "input_type": "select",
+        "default_value": "Anchor",
+        "values": [
+          "Anchor",
+          "Screw",
+          "Button",
+          "Washer",
+          "Other"
+        ],
+        "mutable": true
+      },
+      {
+        "name": "Manufacturer",
+        "input_type": "select",
+        "default_value": "Arthrex",
+        "values": [
+          "Smith & Nephew",
+          "Zimmer Biomet",
+          "Arthrex",
+          "Depuy Synthes",
+          "Other"
+        ],
+        "mutable": true
+      }
+    ]
+  }
+]

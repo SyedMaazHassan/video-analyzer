@@ -1,0 +1,229 @@
+{
+  "labels": [
+    {
+      "name": "Portal Placement",
+      "type": "track",
+      "attributes": [
+        {
+          "name": "Start Frame",
+          "type": "number"
+        },
+        {
+          "name": "End Frame",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "Diagnostic Arthroscopy",
+      "type": "track",
+      "attributes": [
+        {
+          "name": "Start Frame",
+          "type": "number"
+        },
+        {
+          "name": "End Frame",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "Labral Mobilization",
+      "type": "track",
+      "attributes": [
+        {
+          "name": "Start Frame",
+          "type": "number"
+        },
+        {
+          "name": "End Frame",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "Glenoid Preparation",
+      "type": "track",
+      "attributes": [
+        {
+          "name": "Start Frame",
+          "type": "number"
+        },
+        {
+          "name": "End Frame",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "Anchor Placement",
+      "type": "track",
+      "attributes": [
+        {
+          "name": "Start Frame",
+          "type": "number"
+        },
+        {
+          "name": "End Frame",
+          "type": "number"
+        },
+        {
+          "name": "Anchor Number",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "Suture Passage",
+      "type": "track",
+      "attributes": [
+        {
+          "name": "Start Frame",
+          "type": "number"
+        },
+        {
+          "name": "End Frame",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "Suture Tensioning",
+      "type": "track",
+      "attributes": [
+        {
+          "name": "Start Frame",
+          "type": "number"
+        },
+        {
+          "name": "End Frame",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "Final Inspection",
+      "type": "track",
+      "attributes": [
+        {
+          "name": "Start Frame",
+          "type": "number"
+        },
+        {
+          "name": "End Frame",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "Suture Attempt",
+      "type": "shape",
+      "attributes": [
+        {
+          "name": "Anchor Number",
+          "type": "number"
+        },
+        {
+          "name": "Attempt Number",
+          "type": "number"
+        },
+        {
+          "name": "Outcome",
+          "type": "select",
+          "values": [
+            "Success",
+            "Fail"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Anchor Reposition",
+      "type": "shape",
+      "attributes": [
+        {
+          "name": "Anchor Number",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "Anchor Pullout",
+      "type": "shape",
+      "attributes": [
+        {
+          "name": "Anchor Number",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "Bleeding",
+      "type": "shape",
+      "attributes": [
+        {
+          "name": "Severity",
+          "type": "select",
+          "values": [
+            "Mild",
+            "Moderate",
+            "Severe"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Instrument Entry",
+      "type": "shape",
+      "attributes": [
+        {
+          "name": "Instrument",
+          "type": "select",
+          "values": [
+            "Arthroscopic Camera",
+            "Trocar",
+            "Cannula",
+            "Shaver",
+            "Electrocautery Probe",
+            "Probe",
+            "Grasper",
+            "Burr",
+            "Rasp",
+            "Drill Guide",
+            "Suture Anchor",
+            "Suture Passer",
+            "Knot Pusher",
+            "Suture Cutter"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Instrument Exit",
+      "type": "shape",
+      "attributes": [
+        {
+          "name": "Instrument",
+          "type": "select",
+          "values": [
+            "Arthroscopic Camera",
+            "Trocar",
+            "Cannula",
+            "Shaver",
+            "Electrocautery Probe",
+            "Probe",
+            "Grasper",
+            "Burr",
+            "Rasp",
+            "Drill Guide",
+            "Suture Anchor",
+            "Suture Passer",
+            "Knot Pusher",
+            "Suture Cutter"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+services:
+  surgical-analysis:
+    build: .
+    container_name: surgical-video-analysis
+    volumes:
+      - ./videos:/app/videos
+      - ./xml_path:/app/xml_path
+      - ./trained_models:/app/trained_models
+      - ./results:/app/results
+      - ./analysis_results:/app/analysis_results
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: python setup_and_train_simple.py
