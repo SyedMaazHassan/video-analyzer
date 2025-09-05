@@ -6,8 +6,9 @@ services:
       - ./videos:/app/videos
       - ./xml_path:/app/xml_path
       - ./trained_models:/app/trained_models
+      - ./surgical_ai_system/trained_models:/app/surgical_ai_system/trained_models
       - ./results:/app/results
       - ./analysis_results:/app/analysis_results
     environment:
       - PYTHONUNBUFFERED=1
-    command: python setup_and_train_simple.py
+    # Remove command override to let Dockerfile CMD run the professional training

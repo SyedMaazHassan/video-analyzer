@@ -1,0 +1,161 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# Spyder
+.spyderproject
+.spyproject
+
+# Rope
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Machine Learning / AI specific
+*.pth
+*.pkl
+*.h5
+*.hdf5
+*.model
+*.weights
+.wandb/
+
+# PyTorch
+lightning_logs/
+mlruns/
+
+# TensorFlow
+*.pb
+checkpoints/
+saved_model/
+
+# Data files (exclude actual content but keep folders)
+videos/*
+!videos/.gitkeep
+
+xml_path/*
+!xml_path/.gitkeep
+
+# Results and outputs
+results/
+output/
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Docker
+.dockerignore
+
+# System files
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm/Node.js (if using any JS tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Client shared sensitive data
+client_shared/
+!client_shared/.gitkeep
+
+# Analysis results
+analysis_results/
+
+# Model checkpoints and training artifacts
+trained_models/*.pth
+surgical_ai_system/trained_models/*.pth
+!surgical_ai_system/trained_models/.gitkeep
+
+# Configuration files with secrets
+config.ini
+.env
+*.secret
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
