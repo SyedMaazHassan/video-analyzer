@@ -15,7 +15,7 @@ import time
 import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
-from models.phase_detection.simple_phase_detector import AdvancedPhaseDetector
+from models.phase_detection.phase_detector import AdvancedPhaseDetector
 from models.instrument_detection.instrument_tracker import AdvancedInstrumentDetector  
 from models.event_detection.event_detector import MultiBranchEventDetector
 from models.motion_analysis.motion_analyzer import SurgicalMotionAnalyzer

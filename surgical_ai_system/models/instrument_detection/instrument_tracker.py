@@ -18,9 +18,7 @@ Version: 1.0.0
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torchvision.models.detection import fasterrcnn_resnet50_fpn
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
-from torchvision.transforms import functional as TF
+from torchvision.models import resnet50
 import cv2
 import numpy as np
 from typing import Dict, List, Tuple, Optional, Any
@@ -72,89 +70,34 @@ class InstrumentTrack:
 # ==================== ADVANCED INSTRUMENT DETECTOR ====================
 
 class AdvancedInstrumentDetector(nn.Module):
-    """Advanced instrument detection using Faster R-CNN with custom head."""
+    """Simple instrument detector matching training script architecture."""
     
-    def __init__(self, 
-                 num_instruments: int = 14,
-                 backbone_pretrained: bool = True,
-                 min_confidence: float = 0.5):
+    def __init__(self, num_instruments: int = 14):
         super().__init__()
         
         self.num_instruments = num_instruments
-        self.min_confidence = min_confidence
         
-        # Initialize Faster R-CNN model
-        self.detector = fasterrcnn_resnet50_fpn(pretrained=backbone_pretrained)
-        
-        # Replace classifier head for surgical instruments
-        in_features = self.detector.roi_heads.box_predictor.cls_score.in_features
-        self.detector.roi_heads.box_predictor = FastRCNNPredictor(
-            in_features, num_instruments + 1  # +1 for background
+        # Simple ResNet50 backbone - matches training script exactly
+        self.backbone = resnet50(weights='IMAGENET1K_V1')
+        self.backbone.fc = nn.Sequential(
+            nn.Dropout(0.4),
+            nn.Linear(self.backbone.fc.in_features, 256),
+            nn.ReLU(),
+            nn.Linear(256, num_instruments)
         )
         
-        # Feature extractor for tracking
-        self.feature_extractor = nn.Sequential(
-            nn.Linear(in_features, 512),
-            nn.ReLU(),
-            nn.Dropout(0.2),
-            nn.Linear(512, 256),
-            nn.ReLU(),
-            nn.Linear(256, 128)  # Feature vector for tracking
-        )
+    def forward(self, x):
+        """Simple forward pass matching training script."""
+        if len(x.shape) == 5:  # [B, C, T, H, W]
+            # Use only the last frame for instrument detection
+            B, C, T, H, W = x.shape
+            x = x[:, :, -1, :, :]  # [B, C, H, W]
         
-        # Confidence calibration network
-        self.confidence_calibrator = nn.Sequential(
-            nn.Linear(num_instruments + 1, 64),
-            nn.ReLU(),
-            nn.Linear(64, 32),
-            nn.ReLU(),
-            nn.Linear(32, num_instruments + 1),
-            nn.Sigmoid()
-        )
-        
-    def forward(self, images: torch.Tensor, targets: Optional[List[Dict]] = None):
-        """
-        Forward pass for instrument detection.
-        
-        Args:
-            images: Batch of images [batch_size, 3, height, width]
-            targets: Ground truth targets for training
-            
-        Returns:
-            Detection results with boxes, labels, scores, and features
-        """
-        if self.training and targets is not None:
-            # Training mode
-            losses = self.detector(images, targets)
-            return losses
-        else:
-            # Inference mode
-            detections = self.detector(images)
-            
-            # Extract features and calibrate confidence
-            enhanced_detections = []
-            for detection in detections:
-                # Extract features for each detection
-                if len(detection['boxes']) > 0:
-                    # Get ROI features (simplified - would need actual ROI pooling)
-                    roi_features = torch.randn(len(detection['boxes']), 128)  # Placeholder
-                    
-                    # Calibrate confidence scores
-                    calibrated_scores = self.confidence_calibrator(
-                        detection['scores'].unsqueeze(1).expand(-1, self.num_instruments + 1)
-                    )
-                    
-                    enhanced_detections.append({
-                        'boxes': detection['boxes'],
-                        'labels': detection['labels'],
-                        'scores': detection['scores'],
-                        'calibrated_scores': calibrated_scores,
-                        'features': roi_features
-                    })
-                else:
-                    enhanced_detections.append(detection)
-            
-            return enhanced_detections
+        return self.backbone(x)
+    
+    def track_video_instruments(self, video_path, fps):
+        """Placeholder for video analysis - matches expected interface."""
+        return []
 
 # ==================== MULTI-OBJECT TRACKING ====================
 
