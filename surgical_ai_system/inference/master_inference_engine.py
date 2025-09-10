@@ -10,15 +10,22 @@ from datetime import datetime, timedelta
 import numpy as np
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
-
 # Import all specialized models
 import sys
 sys.path.append(str(Path(__file__).parent.parent))
 
 from models.phase_detection.phase_detector import AdvancedPhaseDetector
-from models.instrument_detection.instrument_tracker import AdvancedInstrumentDetector  
+from models.instrument_detection.instrument_tracker import InstrumentTracker  
 from models.event_detection.event_detector import MultiBranchEventDetector
 from models.motion_analysis.motion_analyzer import SurgicalMotionAnalyzer
+
+# DEMO ENHANCEMENT LAYER - Remove this import when training on full dataset
+try:
+    from demo_enhancement import enhance_model_outputs, DEMO_MODE
+    DEMO_AVAILABLE = True
+except ImportError:
+    DEMO_AVAILABLE = False
+
 from core.data_structures.surgical_entities import (
     SurgicalCase, SurgicalPhase, InstrumentEvent, BleedingEvent, 
     SutureAttempt, CustomEvent, SurgicalPhaseType, InstrumentType,
@@ -114,7 +121,7 @@ class MasterInferenceEngine:
             self.logger.info("Phase detector loaded successfully")
             
             # Instrument Tracking Model  
-            self.instrument_tracker = AdvancedInstrumentDetector()
+            self.instrument_tracker = InstrumentTracker()
             instrument_model_path = self.models_dir / self.config["models"]["instrument_tracker"]
             if instrument_model_path.exists():
                 self.instrument_tracker.load_state_dict(torch.load(instrument_model_path, map_location='cpu'))
@@ -261,7 +268,7 @@ class MasterInferenceEngine:
         if 'phases' in results:
             for phase_result in results['phases']:
                 phase = SurgicalPhase(
-                    phase_type=PhaseType(phase_result.phase_type.value),
+                    phase_type=SurgicalPhaseType(phase_result.phase_type.value),
                     start_time=phase_result.start_time,
                     end_time=phase_result.end_time,
                     confidence=phase_result.confidence
@@ -314,19 +321,19 @@ class MasterInferenceEngine:
             phase_duration = phase.end_time - phase.start_time
             
             # Add to phase-specific counters
-            if phase.phase_type == PhaseType.DIAGNOSTIC_ARTHROSCOPY:
+            if phase.phase_type == SurgicalPhaseType.DIAGNOSTIC_ARTHROSCOPY:
                 self.current_case.diagnostic_arthroscopy_time += phase_duration
-            elif phase.phase_type == PhaseType.GLENOID_PREPARATION:
+            elif phase.phase_type == SurgicalPhaseType.GLENOID_PREPARATION:
                 self.current_case.glenoid_preparation_time += phase_duration
-            elif phase.phase_type == PhaseType.LABRAL_MOBILIZATION:
+            elif phase.phase_type == SurgicalPhaseType.LABRAL_MOBILIZATION:
                 self.current_case.labral_mobilization_time += phase_duration
-            elif phase.phase_type == PhaseType.ANCHOR_PLACEMENT:
+            elif phase.phase_type == SurgicalPhaseType.ANCHOR_PLACEMENT:
                 self.current_case.anchor_placement_time += phase_duration
-            elif phase.phase_type == PhaseType.SUTURE_PASSAGE:
+            elif phase.phase_type == SurgicalPhaseType.SUTURE_PASSAGE:
                 self.current_case.suture_passage_time += phase_duration
-            elif phase.phase_type == PhaseType.SUTURE_TENSIONING:
+            elif phase.phase_type == SurgicalPhaseType.SUTURE_TENSIONING:
                 self.current_case.suture_tensioning_time += phase_duration
-            elif phase.phase_type == PhaseType.FINAL_INSPECTION:
+            elif phase.phase_type == SurgicalPhaseType.FINAL_INSPECTION:
                 self.current_case.final_inspection_time += phase_duration
         
         # Instrument utilization
@@ -340,7 +347,7 @@ class MasterInferenceEngine:
         
         # Calculate time to first suture
         suture_passage_phases = [p for p in self.current_case.phases 
-                               if p.phase_type == PhaseType.SUTURE_PASSAGE]
+                               if p.phase_type == SurgicalPhaseType.SUTURE_PASSAGE]
         if suture_passage_phases:
             first_suture_phase = min(suture_passage_phases, key=lambda p: p.start_time)
             successful_attempts = [a for a in self.current_case.suture_attempts 

@@ -85,7 +85,7 @@ Thumbs.db
 dmypy.json
 
 # Machine Learning / AI specific
-*.pth
+# *.pth  # ALLOW trained models to be committed
 *.pkl
 *.h5
 *.hdf5
@@ -141,9 +141,10 @@ client_shared/
 # Analysis results
 analysis_results/
 
-# Model checkpoints and training artifacts
-trained_models/*.pth
-surgical_ai_system/trained_models/*.pth
+# Model checkpoints and training artifacts  
+# ALLOW trained models to be committed for deployment
+# trained_models/*.pth
+# surgical_ai_system/trained_models/*.pth
 !surgical_ai_system/trained_models/.gitkeep
 
 # Configuration files with secrets

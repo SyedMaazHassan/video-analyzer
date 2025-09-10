@@ -604,7 +604,7 @@ def main():
         trainer = PracticalMasterTrainer()
         
         # Start training
-        trainer.train_all_models(num_epochs=2)
+        trainer.train_all_models(num_epochs=5)
         
         logger.info("\n🎉 TRAINING COMPLETED SUCCESSFULLY!")
         logger.info("Generated models:")

@@ -49,5 +49,5 @@ RUN mkdir -p trained_models results analysis_results
 ENV PYTHONPATH=/app
 ENV TORCH_HOME=/app/.torch
 
-# Default command - keep container alive for testing
-CMD ["tail", "-f", "/dev/null"]
+# Default command - run training
+CMD ["python", "surgical_ai_system/training/practical_master_trainer.py"]
