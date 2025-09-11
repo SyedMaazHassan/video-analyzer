@@ -40,8 +40,8 @@
     }
   },
   "training_info": {
-    "dataset_size": 100,
+    "dataset_size": 350,
     "sequence_length": 16,
-    "trained_at": "2025-09-05T16:32:54.757319"
+    "trained_at": "2025-09-10T14:52:39.661727"
   }
 }

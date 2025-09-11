@@ -13,8 +13,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.models import resnet50
+from torchvision import transforms
 from typing import Dict, List, Optional, Tuple
 import numpy as np
+import cv2
+from pathlib import Path
 
 class AdvancedPhaseDetector(nn.Module):
     """Simple phase detection model matching training script architecture."""
@@ -47,6 +50,74 @@ class AdvancedPhaseDetector(nn.Module):
             features = self.backbone(x)
         
         return features
+    
+    def analyze_video_phases(self, video_path: str, fps: float, progress_callback=None) -> List[Dict]:
+        """Analyze video to detect surgical phases."""
+        # Phase labels matching the training data
+        phase_labels = [
+            "Portal Placement", "Diagnostic Arthroscopy", "Labral Mobilization",
+            "Glenoid Preparation", "Anchor Placement", "Suture Passage", 
+            "Suture Tensioning", "Final Inspection"
+        ]
+        
+        # Transform for model input
+        transform = transforms.Compose([
+            transforms.ToPILImage(),
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], 
+                               std=[0.229, 0.224, 0.225])
+        ])
+        
+        # Open video
+        cap = cv2.VideoCapture(video_path)
+        total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        
+        # Sample every 300 frames (10 seconds at 30fps) - OPTIMIZED FOR DEMO
+        sample_rate = 300
+        predictions = []
+        frame_count = 0
+        processed_frames = 0
+        
+        print(f"Starting phase analysis of {total_frames} frames...")
+        
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            
+            if frame_count % sample_rate == 0:
+                processed_frames += 1
+                if processed_frames % 10 == 0:  # Progress every 10 samples
+                    progress = (frame_count / total_frames) * 100
+                    print(f"Phase analysis progress: {progress:.1f}% ({processed_frames} samples processed)")
+                    if progress_callback:
+                        progress_callback(f"🔍 Phase Detection: {progress:.1f}%")
+                # Process frame
+                frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                input_tensor = transform(frame_rgb).unsqueeze(0)
+                
+                with torch.no_grad():
+                    outputs = self.forward(input_tensor)
+                    probabilities = torch.softmax(outputs, dim=1)
+                    predicted_class = torch.argmax(probabilities, dim=1).item()
+                    confidence = probabilities[0][predicted_class].item()
+                    
+                    predicted_phase = phase_labels[predicted_class]
+                    timestamp = frame_count / fps
+                    
+                    predictions.append({
+                        'frame': frame_count,
+                        'timestamp_seconds': timestamp,
+                        'timestamp_formatted': f"{int(timestamp//60):02d}:{int(timestamp%60):02d}",
+                        'predicted_phase': predicted_phase,
+                        'confidence': confidence
+                    })
+            
+            frame_count += 1
+        
+        cap.release()
+        return predictions
 
 def create_phase_detector(num_phases: int = 8) -> AdvancedPhaseDetector:
     """Factory function to create phase detector."""

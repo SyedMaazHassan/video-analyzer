@@ -15,7 +15,7 @@ from typing import Dict, List, Tuple
 import random
 
 # DEMO MODE CONTROL - CHANGE THIS TO DISABLE
-DEMO_MODE = True  # Set to False to remove all enhancements
+DEMO_MODE = False  # Set to False to remove all enhancements
 
 class DemoEnhancer:
     """Provides realistic demo outputs when training data is insufficient."""

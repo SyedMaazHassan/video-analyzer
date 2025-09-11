@@ -231,6 +231,22 @@ class SurgicalCase:
     anatomical_structures: List[AnatomicalStructure] = field(default_factory=list)
     custom_events: List[CustomEvent] = field(default_factory=list)
     
+    # Phase Timing Metrics (required by inference engine)
+    diagnostic_arthroscopy_time: float = 0.0
+    glenoid_preparation_time: float = 0.0
+    labral_mobilization_time: float = 0.0
+    anchor_placement_time: float = 0.0
+    suture_passage_time: float = 0.0
+    suture_tensioning_time: float = 0.0
+    final_inspection_time: float = 0.0
+    total_idle_time: float = 0.0
+    total_duration: float = 0.0
+    number_of_disposables: int = 0
+    number_of_implants: int = 0
+    time_to_first_suture: float = 0.0
+    bleeding_events_count: int = 0
+    suture_failure_rate: float = 0.0
+    
     # Comprehensive Metrics
     metrics: Optional[ProcedureMetrics] = None
     

@@ -608,21 +608,31 @@ class SurgicalVideoAnalyzerGUI:
         
         self.root.after(0, lambda: self.progress_var.set("🧠 Running multi-model AI analysis..."))
         
-        # Run comprehensive analysis
-        surgical_case = self.inference_engine.analyze_video(self.video_path, case_metadata)
-        
-        self.root.after(0, lambda: self.progress_var.set("📊 Generating comprehensive report..."))
-        
-        # Save comprehensive results
-        output_dir = Path("results") / f"analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        saved_files = self.inference_engine.save_comprehensive_results(str(output_dir))
-        
-        # Generate results for GUI display
-        results = self.generate_professional_report(surgical_case, saved_files)
-        
-        # Update UI with results
-        self.root.after(0, lambda: self.display_professional_results(results, surgical_case))
-        self.root.after(0, lambda: self.progress_var.set("✅ Comprehensive analysis complete!"))
+        try:
+            # Create progress callback function
+            def update_progress(message):
+                self.root.after(0, lambda: self.progress_var.set(message))
+            
+            # Run comprehensive analysis
+            surgical_case = self.inference_engine.analyze_video(self.video_path, case_metadata, update_progress)
+            
+            self.root.after(0, lambda: self.progress_var.set("📊 Generating comprehensive report..."))
+            
+            # Save comprehensive results
+            output_dir = Path("results") / f"analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            saved_files = self.inference_engine.save_comprehensive_results(str(output_dir))
+            
+            # Generate results for GUI display
+            results = self.generate_professional_report(surgical_case, saved_files)
+            
+            # Update UI with results
+            self.root.after(0, lambda: self.display_professional_results(results, surgical_case))
+            self.root.after(0, lambda: self.progress_var.set("✅ Comprehensive analysis complete!"))
+            
+        except Exception as e:
+            self.root.after(0, lambda: messagebox.showerror("Analysis Error", f"Analysis failed: {str(e)}"))
+            self.root.after(0, lambda: self.progress_var.set("❌ Analysis failed"))
+            print(f"Analysis error: {e}")  # Also print to console for debugging
     
     def run_basic_analysis(self):
         """Run basic analysis using simple phase detection model."""
@@ -695,6 +705,9 @@ class SurgicalVideoAnalyzerGUI:
     
     def generate_professional_report(self, surgical_case, saved_files):
         """Generate comprehensive report from professional analysis."""
+        # Get metrics from the surgical case
+        metrics = surgical_case.metrics if surgical_case.metrics else {}
+        
         return {
             'metadata': {
                 'case_id': surgical_case.case_id,
@@ -702,24 +715,24 @@ class SurgicalVideoAnalyzerGUI:
                 'analysis_type': 'comprehensive'
             },
             'surgical_analysis': {
-                'total_duration_minutes': surgical_case.total_duration / 60,
-                'total_idle_time_minutes': surgical_case.total_idle_time / 60,
+                'total_duration_minutes': surgical_case.video_duration / 60,
+                'total_idle_time_minutes': getattr(metrics, 'total_idle_time', 0) / 60,
                 'phases_detected': len(surgical_case.phases),
-                'instruments_detected': len(surgical_case.instrument_events),
-                'bleeding_events': surgical_case.bleeding_events_count,
+                'instruments_detected': len(surgical_case.instruments),
+                'bleeding_events': len(surgical_case.bleeding_events),
                 'suture_attempts': len(surgical_case.suture_attempts),
-                'suture_failure_rate': surgical_case.suture_failure_rate * 100,
-                'number_of_implants': surgical_case.number_of_implants,
-                'time_to_first_suture': surgical_case.time_to_first_suture
+                'suture_failure_rate': getattr(metrics, 'suture_failure_rate', 0) * 100,
+                'number_of_implants': getattr(metrics, 'number_of_implants', 0),
+                'time_to_first_suture': getattr(metrics, 'time_to_first_suture', 0)
             },
             'phase_durations': {
-                'diagnostic_arthroscopy': surgical_case.diagnostic_arthroscopy_time / 60,
-                'glenoid_preparation': surgical_case.glenoid_preparation_time / 60,
-                'labral_mobilization': surgical_case.labral_mobilization_time / 60,
-                'anchor_placement': surgical_case.anchor_placement_time / 60,
-                'suture_passage': surgical_case.suture_passage_time / 60,
-                'suture_tensioning': surgical_case.suture_tensioning_time / 60,
-                'final_inspection': surgical_case.final_inspection_time / 60
+                'diagnostic_arthroscopy': getattr(metrics, 'diagnostic_arthroscopy_time', 0) / 60,
+                'glenoid_preparation': getattr(metrics, 'glenoid_preparation_time', 0) / 60,
+                'labral_mobilization': getattr(metrics, 'labral_mobilization_time', 0) / 60,
+                'anchor_placement': getattr(metrics, 'anchor_placement_time', 0) / 60,
+                'suture_passage': getattr(metrics, 'suture_passage_time', 0) / 60,
+                'suture_tensioning': getattr(metrics, 'suture_tensioning_time', 0) / 60,
+                'final_inspection': getattr(metrics, 'final_inspection_time', 0) / 60
             },
             'saved_files': saved_files,
             'analysis_timestamp': datetime.now().isoformat()
