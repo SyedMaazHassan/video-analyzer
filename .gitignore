@@ -53,6 +53,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+ven/
+
 
 # IDEs and editors
 .vscode/
@@ -139,7 +141,6 @@ client_shared/
 !client_shared/.gitkeep
 
 # Analysis results
-analysis_results/
 
 # Model checkpoints and training artifacts  
 # ALLOW trained models to be committed for deployment

@@ -1,0 +1,8 @@
+label,start_frame,end_frame,duration_frames,duration_sec,Anchor Number,Attempt Number,Outcome
+Diagnositc Arthroscopy,1454,2841,1387,46.233333333333334,,,
+Suture Attempt,14376,14377,1,0.03333333333333333,1,1,Fail
+Suture Attempt,15161,15162,1,0.03333333333333333,1,2,Success
+Suture Attempt,21672,21673,1,0.03333333333333333,2,1,Success
+Suture Attempt,26330,26331,1,0.03333333333333333,3,1,Fail
+Suture Attempt,26866,26867,1,0.03333333333333333,3,2,Fail
+Suture Attempt,32574,32575,1,0.03333333333333333,4,1,Success
