@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surgical Analysis Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 24px 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-icon i {
+            width: 28px;
+            height: 28px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            opacity: 0.7;
+            margin-top: 2px;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .metric-icon i {
+            width: 20px;
+            height: 20px;
+        }
+
+        .metric-icon.blue { background: #eff6ff; color: #3b82f6; }
+        .metric-icon.green { background: #f0fdf4; color: #22c55e; }
+        .metric-icon.amber { background: #fffbeb; color: #f59e0b; }
+        .metric-icon.purple { background: #faf5ff; color: #a855f7; }
+
+        .metric-card .label {
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+            letter-spacing: -1px;
+        }
+
+        .metric-card .subtitle {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            width: 20px;
+            height: 20px;
+            color: #3b82f6;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn i {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 12px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            color: #64748b;
+        }
+
+        .tab i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .tab:hover {
+            color: #334155;
+            background: #e2e8f0;
+        }
+
+        .tab.active {
+            color: #3b82f6;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .cases-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .cases-table th {
+            background: #f8fafc;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cases-table td {
+            padding: 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        .cases-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .cases-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge i {
+            width: 14px;
+            height: 14px;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-queued {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-processing {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 48px;
+            color: #94a3b8;
+        }
+
+        .spinner {
+            border: 3px solid #f1f5f9;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .case-detail {
+            margin-top: 24px;
+            padding: 24px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            display: none;
+        }
+
+        .case-detail.active {
+            display: block;
+        }
+
+        .case-detail h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .case-detail h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .case-detail h4 i {
+            width: 16px;
+            height: 16px;
+            color: #3b82f6;
+        }
+
+        .phases-list, .events-list {
+            margin: 12px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .phase-item, .event-item {
+            padding: 12px 16px;
+            background: white;
+            border-left: 3px solid #3b82f6;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            font-size: 14px;
+        }
+
+        .event-item {
+            border-left-color: #f59e0b;
+        }
+
+        .report-view {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 24px;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            max-height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-hint {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert i {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .alert h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 16px 20px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i data-lucide="activity"></i>
+            </div>
+            <div>
+                <h1>Surgical Analysis Platform</h1>
+                <p>AI-Powered Surgical Video Analysis & Reporting</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Dashboard Metrics -->
+        <div class="metrics-grid" id="metrics">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon blue">
+                        <i data-lucide="folder-kanban"></i>
+                    </div>
+                    <div class="label">Total Cases</div>
+                </div>
+                <div class="value" id="total-cases">-</div>
+                <div class="subtitle">Completed surgeries</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon green">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <div class="label">Avg Procedure Time</div>
+                </div>
+                <div class="value" id="avg-duration">-</div>
+                <div class="subtitle" id="diff-percent">vs estimated</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon amber">
+                        <i data-lucide="droplet"></i>
+                    </div>
+                    <div class="label">Bleeding Events</div>
+                </div>
+                <div class="value" id="avg-bleeding">-</div>
+                <div class="subtitle">per case</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon purple">
+                        <i data-lucide="target"></i>
+                    </div>
+                    <div class="label">Suture Success Rate</div>
+                </div>
+                <div class="value" id="suture-rate">-</div>
+                <div class="subtitle" id="suture-details">-</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('cases')">
+                <i data-lucide="clipboard-list"></i>
+                Cases
+            </div>
+            <div class="tab" onclick="switchTab('charts')">
+                <i data-lucide="bar-chart-3"></i>
+                Analytics
+            </div>
+            <div class="tab" onclick="switchTab('surgeons')">
+                <i data-lucide="stethoscope"></i>
+                Surgeons
+            </div>
+            <div class="tab" onclick="switchTab('upload')">
+                <i data-lucide="upload"></i>
+                Upload Case
+            </div>
+            <div class="tab" onclick="switchTab('add-surgeon')">
+                <i data-lucide="user-plus"></i>
+                Add Surgeon
+            </div>
+        </div>
+
+        <!-- Charts Tab -->
+        <div class="tab-content" id="tab-charts">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i data-lucide="bar-chart-2"></i>
+                        Phase Duration Analysis
+                    </h2>
+                    <button class="btn btn-primary" onclick="downloadChart('phaseDurationChart', 'phase-durations')">
+                        <i data-lucide="download"></i>
+                        Download Chart
+                    </button>
+                </div>
+                <div style="height: 400px; position: relative;">
+                    <canvas id="phaseDurationChart"></canvas>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i data-lucide="pie-chart"></i>
+                        Event Distribution
+                    </h2>
+                    <button class="btn btn-primary" onclick="downloadChart('eventDistributionChart', 'event-distribution')">
+                        <i data-lucide="download"></i>
+                        Download Chart
+                    </button>
+                </div>
+                <div style="height: 400px; position: relative;">
+                    <canvas id="eventDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cases Tab -->
+        <div class="tab-content active" id="tab-cases">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i data-lucide="folder-open"></i>
+                        Recent Cases
+                    </h2>
+                    <button class="btn btn-secondary" onclick="refreshData()">
+                        <i data-lucide="refresh-cw"></i>
+                        Refresh
+                    </button>
+                </div>
+
+                <div id="cases-loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading cases...</p>
+                </div>
+
+                <table class="cases-table" id="cases-table" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Case ID</th>
+                            <th>Surgeon</th>
+                            <th>Date</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cases-tbody"></tbody>
+                </table>
+
+                <div id="case-detail" class="case-detail"></div>
+            </div>
+        </div>
+
+        <!-- Surgeons Tab -->
+        <div class="tab-content" id="tab-surgeons">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i data-lucide="users"></i>
+                        Surgeons
+                    </h2>
+                </div>
+                <table class="cases-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Department</th>
+                            <th>Specialty</th>
+                            <th>Cases</th>
+                            <th>Avg Duration</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="surgeons-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Upload Tab -->
+        <div class="tab-content" id="tab-upload">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i data-lucide="upload-cloud"></i>
+                        Upload New Case
+                    </h2>
+                </div>
+
+                <form id="uploadForm" onsubmit="uploadCase(event)" style="max-width: 600px;">
+                    <div class="form-group">
+                        <label class="form-label">Case ID</label>
+                        <input type="text" id="case_id" name="case_id" required
+                               class="form-input"
+                               placeholder="e.g., CASE12345">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Surgeon</label>
+                        <select id="surgeon_id" name="surgeon_id" required class="form-input">
+                            <option value="">Select Surgeon</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Procedure Type</label>
+                        <input type="text" id="procedure_type" name="procedure_type" value="Labral Repair"
+                               class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Video File</label>
+                        <input type="file" id="video_file" name="video_file" accept="video/*"
+                               class="form-input">
+                        <p class="form-hint">Supported formats: MP4, AVI, MOV, MKV (Optional for demo)</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Notes</label>
+                        <textarea id="notes" name="notes" rows="3"
+                                  class="form-input"
+                                  placeholder="Additional notes..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px;">
+                        <i data-lucide="upload"></i>
+                        Upload and Process Case
+                    </button>
+                </form>
+
+                <div id="uploadResult" style="margin-top: 24px;"></div>
+            </div>
+        </div>
+
+        <!-- Add Surgeon Tab -->
+        <div class="tab-content" id="tab-add-surgeon">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i data-lucide="user-plus"></i>
+                        Add New Surgeon
+                    </h2>
+                </div>
+
+                <form id="surgeonForm" onsubmit="addSurgeon(event)" style="max-width: 600px;">
+                    <div class="form-group">
+                        <label class="form-label">Surgeon ID</label>
+                        <input type="text" id="new_surgeon_id" name="surgeon_id" required
+                               class="form-input"
+                               placeholder="e.g., S004">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" id="first_name" name="first_name" required
+                               class="form-input"
+                               placeholder="e.g., John">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" required
+                               class="form-input"
+                               placeholder="e.g., Doe">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Department</label>
+                        <input type="text" id="department" name="department" value="Orthopedics"
+                               class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Specialty</label>
+                        <input type="text" id="specialty" name="specialty" value="Sports Medicine"
+                               class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="email" name="email"
+                               class="form-input"
+                               placeholder="surgeon@hospital.com">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px;">
+                        <i data-lucide="plus"></i>
+                        Add Surgeon
+                    </button>
+                </form>
+
+                <div id="surgeonResult" style="margin-top: 24px;"></div>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div class="tab-content" id="tab-reports">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i data-lucide="file-text"></i>
+                        Generate Report
+                    </h2>
+                </div>
+                <p>Select a case or surgeon from their respective tabs to generate reports.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Global state
+        let currentCases = [];
+        let currentSurgeons = [];
+
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                const response = await fetch('/api/dashboard');
+                const data = await response.json();
+
+                document.getElementById('total-cases').textContent = data.total_cases;
+                document.getElementById('avg-duration').textContent = data.avg_duration + ' min';
+                document.getElementById('diff-percent').textContent = `${data.diff_percent > 0 ? '+' : ''}${data.diff_percent}% vs estimated`;
+                document.getElementById('avg-bleeding').textContent = data.avg_bleeding;
+                document.getElementById('suture-rate').textContent = data.suture_success_rate + '%';
+                document.getElementById('suture-details').textContent = `${data.successful_sutures}/${data.total_sutures} attempts`;
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        // Load cases
+        async function loadCases() {
+            document.getElementById('cases-loading').style.display = 'block';
+            document.getElementById('cases-table').style.display = 'none';
+
+            try {
+                const response = await fetch('/api/cases');
+                currentCases = await response.json();
+
+                const tbody = document.getElementById('cases-tbody');
+                tbody.innerHTML = '';
+
+                currentCases.forEach(case_ => {
+                    const statusIcon = case_.processing_status === 'completed' ? 'check-circle' :
+                                       case_.processing_status === 'processing' ? 'loader' : 'clock';
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${case_.case_id}</strong></td>
+                        <td>${case_.surgeon_name}</td>
+                        <td>${case_.procedure_date}</td>
+                        <td>${case_.actual_duration_min || 'N/A'} min</td>
+                        <td><span class="status-badge status-${case_.processing_status}"><i data-lucide="${statusIcon}"></i>${case_.processing_status}</span></td>
+                        <td>
+                            <button class="btn btn-primary" onclick="viewCase('${case_.case_id}')" style="padding: 8px 14px; font-size: 13px;">
+                                <i data-lucide="eye"></i>
+                                View
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                document.getElementById('cases-loading').style.display = 'none';
+                document.getElementById('cases-table').style.display = 'table';
+                lucide.createIcons();
+            } catch (error) {
+                console.error('Error loading cases:', error);
+                document.getElementById('cases-loading').innerHTML = '<p>Error loading cases</p>';
+            }
+        }
+
+        // Load surgeons
+        async function loadSurgeons() {
+            try {
+                const response = await fetch('/api/surgeons');
+                currentSurgeons = await response.json();
+
+                const tbody = document.getElementById('surgeons-tbody');
+                tbody.innerHTML = '';
+
+                currentSurgeons.forEach(surgeon => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><strong>${surgeon.full_name}</strong></td>
+                        <td>${surgeon.department}</td>
+                        <td>${surgeon.specialty}</td>
+                        <td>${surgeon.total_cases}</td>
+                        <td>${surgeon.avg_duration} min</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="viewSurgeonReport('${surgeon.surgeon_id}')" style="padding: 8px 14px; font-size: 13px;">
+                                <i data-lucide="file-text"></i>
+                                Report
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                lucide.createIcons();
+            } catch (error) {
+                console.error('Error loading surgeons:', error);
+            }
+        }
+
+        // View case details
+        async function viewCase(caseId) {
+            const detailDiv = document.getElementById('case-detail');
+            detailDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading case details...</p></div>';
+            detailDiv.classList.add('active');
+
+            try {
+                const response = await fetch(`/api/case/${caseId}`);
+                const case_ = await response.json();
+
+                let html = `
+                    <h3><i data-lucide="folder-open"></i> Case Details: ${case_.case_id}</h3>
+                    <p><strong>Surgeon:</strong> ${case_.surgeon_name}</p>
+                    <p><strong>Date:</strong> ${case_.procedure_date}</p>
+                    <p><strong>Duration:</strong> ${case_.actual_duration_min} min (Est: ${case_.estimated_duration_min} min)</p>
+                `;
+
+                // Add timeline visualization
+                html += '<h4><i data-lucide="clock"></i> Timeline Visualization</h4>';
+                html += '<div id="timeline-loading" class="loading"><div class="spinner"></div><p>Loading timeline...</p></div>';
+                html += '<img id="timeline-img" style="width: 100%; display: none; border: 1px solid #e2e8f0; border-radius: 12px; margin: 12px 0;"/>';
+
+                html += `<h4><i data-lucide="layers"></i> Phases (${case_.phases.length})</h4>
+                    <div class="phases-list">`;
+
+                case_.phases.forEach(phase => {
+                    html += `
+                        <div class="phase-item">
+                            <strong>${phase.phase_name}</strong>
+                            ${phase.anchor_number ? ` (Anchor #${phase.anchor_number})` : ''}
+                            - ${phase.duration_min} min
+                            (Frames: ${phase.start_frame} - ${phase.end_frame})
+                        </div>
+                    `;
+                });
+
+                html += `</div><h4><i data-lucide="alert-triangle"></i> Events (${case_.events.length})</h4><div class="events-list">`;
+
+                case_.events.forEach(event => {
+                    let details = [];
+                    if (event.severity) details.push(`Severity: ${event.severity}`);
+                    if (event.outcome) details.push(`Outcome: ${event.outcome}`);
+                    if (event.anchor_number) details.push(`Anchor #${event.anchor_number}`);
+
+                    html += `
+                        <div class="event-item">
+                            <strong>${event.event_type}</strong> at ${event.event_time_min.toFixed(1)} min
+                            ${details.length > 0 ? `- ${details.join(', ')}` : ''}
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+
+                if (case_.resources) {
+                    html += `
+                        <h4><i data-lucide="package"></i> Resources</h4>
+                        <p><strong>Implants:</strong> ${case_.resources.implants_count} |
+                           <strong>Disposables:</strong> ${case_.resources.disposables_count} |
+                           <strong>Electrocautery:</strong> ${case_.resources.electrocautery_usage_percent}% |
+                           <strong>Repositions:</strong> ${case_.resources.anchor_repositions}</p>
+                    `;
+                }
+
+                html += `
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="generateReport('${caseId}')">
+                            <i data-lucide="file-text"></i>
+                            View Text Report
+                        </button>
+                        <a href="/api/pdf-report/${caseId}" class="btn btn-primary" download>
+                            <i data-lucide="download"></i>
+                            Download PDF Report
+                        </a>
+                    </div>
+                `;
+
+                detailDiv.innerHTML = html;
+                lucide.createIcons();
+
+                // Load timeline image
+                loadTimelineImage(caseId);
+
+            } catch (error) {
+                console.error('Error loading case details:', error);
+                detailDiv.innerHTML = '<p>Error loading case details</p>';
+            }
+        }
+
+        // Load timeline image
+        async function loadTimelineImage(caseId) {
+            try {
+                const response = await fetch(`/api/timeline/${caseId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('timeline-loading').style.display = 'none';
+                    const img = document.getElementById('timeline-img');
+                    img.src = data.image;
+                    img.style.display = 'block';
+                } else {
+                    document.getElementById('timeline-loading').innerHTML = '<p>Timeline not available</p>';
+                }
+            } catch (error) {
+                console.error('Error loading timeline:', error);
+                document.getElementById('timeline-loading').innerHTML = '<p>Timeline error</p>';
+            }
+        }
+
+        // Generate case report
+        async function generateReport(caseId) {
+            const detailDiv = document.getElementById('case-detail');
+            detailDiv.innerHTML += '<div class="loading"><div class="spinner"></div><p>Generating report...</p></div>';
+
+            try {
+                const response = await fetch(`/api/report/${caseId}`);
+                const data = await response.json();
+
+                detailDiv.innerHTML = `
+                    <h3><i data-lucide="file-text"></i> Report for Case ${caseId}</h3>
+                    <div class="action-buttons" style="margin-bottom: 16px;">
+                        <button class="btn btn-primary" onclick="downloadReport('${caseId}', 'case')">
+                            <i data-lucide="download"></i>
+                            Download Report
+                        </button>
+                    </div>
+                    <div class="report-view">${data.report}</div>
+                    <button class="btn btn-secondary" onclick="viewCase('${caseId}')" style="margin-top: 20px;">
+                        <i data-lucide="arrow-left"></i>
+                        Back to Case Details
+                    </button>
+                `;
+                lucide.createIcons();
+            } catch (error) {
+                console.error('Error generating report:', error);
+                detailDiv.innerHTML += '<p>Error generating report</p>';
+            }
+        }
+
+        // Download report as text file
+        function downloadReport(id, type) {
+            const reportView = document.querySelector('.report-view');
+            if (!reportView) return;
+
+            const text = reportView.textContent;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${type}_${id}_report.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // View surgeon report
+        async function viewSurgeonReport(surgeonId) {
+            console.log('viewSurgeonReport called with:', surgeonId);
+
+            // Switch to surgeons tab manually without using switchTab
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            const surgeonTabButton = document.querySelector('.tab[onclick*="surgeons"]');
+            if (surgeonTabButton) surgeonTabButton.classList.add('active');
+
+            const surgeonTab = document.getElementById('tab-surgeons');
+            if (!surgeonTab) {
+                console.error('Could not find tab-surgeons element');
+                return;
+            }
+            surgeonTab.classList.add('active');
+            surgeonTab.innerHTML = '<div class="section"><div class="loading"><div class="spinner"></div><p>Generating surgeon report...</p></div></div>';
+
+            try {
+                console.log('Fetching surgeon report...');
+                const response = await fetch(`/api/surgeon-report/${surgeonId}`);
+                const data = await response.json();
+                console.log('Report data received');
+
+                surgeonTab.innerHTML = `
+                    <div class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i data-lucide="user"></i>
+                                Surgeon Performance Report
+                            </h2>
+                            <button class="btn btn-secondary" onclick="location.reload()">
+                                <i data-lucide="arrow-left"></i>
+                                Back to Surgeons
+                            </button>
+                        </div>
+                        <div class="action-buttons" style="margin-bottom: 16px;">
+                            <button class="btn btn-primary" onclick="downloadReport('${surgeonId}', 'surgeon')">
+                                <i data-lucide="download"></i>
+                                Download TXT
+                            </button>
+                            <a href="/api/pdf-surgeon-report/${surgeonId}" class="btn btn-primary" download>
+                                <i data-lucide="file-down"></i>
+                                Download PDF
+                            </a>
+                        </div>
+                        <div class="report-view">${data.report}</div>
+                    </div>
+                `;
+                lucide.createIcons();
+            } catch (error) {
+                console.error('Error generating surgeon report:', error);
+                surgeonTab.innerHTML = '<div class="section"><p>Error generating report: ' + error.message + '</p></div>';
+            }
+        }
+
+        // Load charts
+        let phaseDurationChart = null;
+        let eventDistributionChart = null;
+
+        async function loadCharts() {
+            try {
+                // Phase Duration Chart
+                const phaseResponse = await fetch('/api/charts/phase-durations');
+                const phaseData = await phaseResponse.json();
+
+                const ctx1 = document.getElementById('phaseDurationChart');
+                if (phaseDurationChart) phaseDurationChart.destroy();
+
+                phaseDurationChart = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: phaseData.labels,
+                        datasets: [{
+                            label: 'Average Duration (min)',
+                            data: phaseData.avg,
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 0,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true },
+                            title: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: { display: true, text: 'Minutes' },
+                                grid: { color: 'rgba(0,0,0,0.05)' }
+                            },
+                            x: {
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+
+                // Event Distribution Chart
+                const eventResponse = await fetch('/api/charts/event-distribution');
+                const eventData = await eventResponse.json();
+
+                const ctx2 = document.getElementById('eventDistributionChart');
+                if (eventDistributionChart) eventDistributionChart.destroy();
+
+                eventDistributionChart = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: eventData.labels,
+                        datasets: [{
+                            data: eventData.values,
+                            backgroundColor: [
+                                'rgba(59, 130, 246, 0.8)',
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(239, 68, 68, 0.8)',
+                                'rgba(139, 92, 246, 0.8)',
+                            ],
+                            borderWidth: 0,
+                            spacing: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right' }
+                        },
+                        cutout: '60%'
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error loading charts:', error);
+            }
+        }
+
+        // Upload case
+        async function uploadCase(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('uploadForm');
+            const formData = new FormData(form);
+            const resultDiv = document.getElementById('uploadResult');
+
+            // Auto-set estimated duration to 52 minutes (from config)
+            formData.append('estimated_duration', '52.0');
+
+            resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Uploading and processing case...</p></div>';
+
+            try {
+                const response = await fetch('/api/upload-case', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i data-lucide="check-circle"></i>
+                            <div>
+                                <h4>Success!</h4>
+                                <p><strong>Case ID:</strong> ${data.case_id}</p>
+                                <p>${data.message}</p>
+                                <p><small>Refresh the Cases tab in ~15 seconds to see the completed case.</small></p>
+                                <button class="btn btn-primary" onclick="setTimeout(() => { loadCases(); switchTab('cases'); }, 15000); this.disabled=true; this.innerHTML='<i data-lucide=\\'loader\\'></i> Refreshing in 15s...'; lucide.createIcons();" style="margin-top: 12px;">
+                                    <i data-lucide="refresh-cw"></i>
+                                    Auto-Refresh Cases
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    form.reset();
+                    loadDashboard();
+                    lucide.createIcons();
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-error">
+                            <i data-lucide="x-circle"></i>
+                            <div>
+                                <h4>Error</h4>
+                                <p>${data.error}</p>
+                            </div>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                resultDiv.innerHTML = `
+                    <div class="alert alert-error">
+                        <i data-lucide="x-circle"></i>
+                        <div>
+                            <h4>Error</h4>
+                            <p>Failed to upload case. Please try again.</p>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+        }
+
+        // Add surgeon
+        async function addSurgeon(event) {
+            event.preventDefault();
+
+            const form = document.getElementById('surgeonForm');
+            const formData = new FormData(form);
+            const resultDiv = document.getElementById('surgeonResult');
+
+            resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Adding surgeon...</p></div>';
+
+            try {
+                const data = {
+                    surgeon_id: formData.get('surgeon_id'),
+                    first_name: formData.get('first_name'),
+                    last_name: formData.get('last_name'),
+                    department: formData.get('department'),
+                    specialty: formData.get('specialty'),
+                    email: formData.get('email')
+                };
+
+                const response = await fetch('/api/add-surgeon', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success">
+                            <i data-lucide="check-circle"></i>
+                            <div>
+                                <h4>Success!</h4>
+                                <p>${result.message}</p>
+                                <button class="btn btn-primary" onclick="switchTab('surgeons'); loadSurgeons();" style="margin-top: 12px;">
+                                    <i data-lucide="users"></i>
+                                    View All Surgeons
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    form.reset();
+                    loadSurgeonDropdown();
+                    lucide.createIcons();
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-error">
+                            <i data-lucide="x-circle"></i>
+                            <div>
+                                <h4>Error</h4>
+                                <p>${result.error}</p>
+                            </div>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                }
+            } catch (error) {
+                console.error('Add surgeon error:', error);
+                resultDiv.innerHTML = `
+                    <div class="alert alert-error">
+                        <i data-lucide="x-circle"></i>
+                        <div>
+                            <h4>Error</h4>
+                            <p>Failed to add surgeon. Please try again.</p>
+                        </div>
+                    </div>
+                `;
+                lucide.createIcons();
+            }
+        }
+
+        // Download chart as image
+        function downloadChart(chartId, filename) {
+            const canvas = document.getElementById(chartId);
+            if (!canvas) return;
+
+            const url = canvas.toDataURL('image/png');
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${filename}.png`;
+            a.click();
+        }
+
+        // Switch tabs
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            if (typeof event !== 'undefined' && event && event.target) {
+                event.target.closest('.tab').classList.add('active');
+            } else {
+                const tabElement = document.querySelector(`.tab[onclick*="${tabName}"]`);
+                if (tabElement) tabElement.classList.add('active');
+            }
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            // Load charts when switching to charts tab
+            if (tabName === 'charts') {
+                loadCharts();
+            }
+        }
+
+        // Load surgeon dropdown for upload form
+        async function loadSurgeonDropdown() {
+            try {
+                const response = await fetch('/api/surgeons');
+                const surgeons = await response.json();
+
+                const select = document.getElementById('surgeon_id');
+                select.innerHTML = '<option value="">Select Surgeon</option>';
+
+                surgeons.forEach(surgeon => {
+                    const option = document.createElement('option');
+                    option.value = surgeon.surgeon_id;
+                    option.textContent = surgeon.full_name;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Error loading surgeons for dropdown:', error);
+            }
+        }
+
+        // Refresh data
+        function refreshData() {
+            loadDashboard();
+            loadCases();
+            loadSurgeons();
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            loadDashboard();
+            loadCases();
+            loadSurgeons();
+            loadSurgeonDropdown();
+        });
+    </script>
+</body>
+</html>

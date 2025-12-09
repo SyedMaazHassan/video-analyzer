@@ -1,3 +1,8 @@
+opencv-python-headless==4.9.0.80
+pandas==2.2.2
+numpy==1.26.4
+lxml
+tqdm==4.66.4
 # Core ML/AI Dependencies
 torch>=2.0.0
 torchvision>=0.15.0

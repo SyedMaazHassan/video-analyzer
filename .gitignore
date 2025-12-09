@@ -161,3 +161,8 @@ config.ini
 .Trashes
 ehthumbs.db
 Thumbs.db
+legacy/
+*.db
+data/
+venv/
+venv_desktop/

@@ -5,7 +5,14 @@
       "Bash(docker:*)",
       "Bash(tree:*)",
       "Bash(python test:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(source:*)",
+      "Bash(source venv_desktop/bin/activate)",
+      "Bash(pip show:*)",
+      "Bash(python app/web_app.py:*)",
+      "Bash(pkill:*)",
+      "Bash(ss -ltnp:*)",
+      "Bash(netstat:*)"
     ],
     "deny": [],
     "ask": []
