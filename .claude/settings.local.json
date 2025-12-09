@@ -12,7 +12,10 @@
       "Bash(python app/web_app.py:*)",
       "Bash(pkill:*)",
       "Bash(ss -ltnp:*)",
-      "Bash(netstat:*)"
+      "Bash(netstat:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

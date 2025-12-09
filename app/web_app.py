@@ -20,7 +20,7 @@ from datetime import datetime
 import json
 import threading
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 db = DatabaseManager('data/surgical_analysis.db')
 report_gen = ReportGenerator(db)
 pdf_gen = PDFReportGenerator(db)
