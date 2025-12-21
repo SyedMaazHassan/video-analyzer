@@ -22,6 +22,10 @@ import threading
 
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 db = DatabaseManager('data/surgical_analysis.db')
+
+# Initialize sample surgeons if database is empty (for new installations)
+db.init_sample_surgeons()
+
 report_gen = ReportGenerator(db)
 pdf_gen = PDFReportGenerator(db)
 
@@ -429,36 +433,40 @@ def api_add_surgeon():
     """Add a new surgeon"""
     try:
         data = request.get_json()
-        
+
         session = db.get_session()
-        
-        # Check if surgeon already exists
-        existing = session.query(Surgeon).filter_by(surgeon_id=data['surgeon_id']).first()
-        if existing:
-            session.close()
+
+        try:
+            # Check if surgeon already exists
+            existing = session.query(Surgeon).filter_by(surgeon_id=data['surgeon_id']).first()
+            if existing:
+                return jsonify({
+                    'success': False,
+                    'error': f"Surgeon with ID {data['surgeon_id']} already exists"
+                }), 400
+
+            # Create surgeon
+            surgeon = Surgeon(
+                surgeon_id=data['surgeon_id'],
+                first_name=data['first_name'],
+                last_name=data['last_name'],
+                department=data.get('department', 'Orthopedics'),
+                specialty=data.get('specialty', 'Sports Medicine'),
+                email=data.get('email', '')
+            )
+            session.add(surgeon)
+            session.commit()
+
+            # Capture name before closing session
+            full_name = f"{data['first_name']} {data['last_name']}"
+
             return jsonify({
-                'success': False,
-                'error': f"Surgeon with ID {data['surgeon_id']} already exists"
-            }), 400
-        
-        # Create surgeon
-        surgeon = Surgeon(
-            surgeon_id=data['surgeon_id'],
-            first_name=data['first_name'],
-            last_name=data['last_name'],
-            department=data.get('department', 'Orthopedics'),
-            specialty=data.get('specialty', 'Sports Medicine'),
-            email=data.get('email', '')
-        )
-        session.add(surgeon)
-        session.commit()
-        session.close()
-        
-        return jsonify({
-            'success': True,
-            'message': f"Surgeon {surgeon.full_name} added successfully!"
-        })
-        
+                'success': True,
+                'message': f"Surgeon {full_name} added successfully!"
+            })
+        finally:
+            session.close()
+
     except Exception as e:
         import traceback
         traceback.print_exc()

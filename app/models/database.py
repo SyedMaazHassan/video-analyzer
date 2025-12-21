@@ -129,17 +129,30 @@ class Resource(Base):
 
 class DatabaseManager:
     """Manages database connections and operations"""
-    
+
     def __init__(self, db_path='data/surgical_analysis.db'):
         """Initialize database manager"""
         # Ensure data directory exists
-        os.makedirs(os.path.dirname(db_path) if os.path.dirname(db_path) else 'data', exist_ok=True)
-        
+        data_dir = os.path.dirname(db_path) if os.path.dirname(db_path) else 'data'
+        if not os.path.exists(data_dir):
+            os.makedirs(data_dir, exist_ok=True)
+            print(f"📁 Created data directory: {data_dir}")
+
+        # Check if database file exists (for logging)
+        db_exists = os.path.exists(db_path)
+
         self.db_path = db_path
         self.engine = create_engine(f'sqlite:///{db_path}')
+
+        # Create all tables (safe to call even if they exist)
         Base.metadata.create_all(self.engine)
+
         self.Session = sessionmaker(bind=self.engine)
-        print(f"✅ Database initialized at {db_path}")
+
+        if db_exists:
+            print(f"✅ Database loaded from {db_path}")
+        else:
+            print(f"✅ New database created at {db_path}")
     
     def get_session(self):
         """Get a new database session"""

@@ -96,13 +96,12 @@ class RealInferenceEngine:
             if progress_callback:
                 progress_callback(10, "Running BiLSTM-CRF model...")
 
-            # Run inference subprocess
+            # Run inference subprocess (run from project root, not model-inference)
             print(f"Running inference: {' '.join(cmd)}")
             result = subprocess.run(
                 cmd,
                 capture_output=True,
-                text=True,
-                cwd=str(MODEL_INFERENCE_DIR)
+                text=True
             )
 
             if result.returncode != 0:
